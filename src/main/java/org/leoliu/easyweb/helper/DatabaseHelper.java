@@ -10,6 +10,10 @@ import org.leoliu.easyweb.utils.PropsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +59,7 @@ public class DatabaseHelper {
         Connection conn = CONNECTION_HOLDER.get();
         if(conn == null){
             try {
+                //通过数据连接池取得连接
                 conn = DATA_SOURCE.getConnection();
             } catch (SQLException e){
                 LOGGER.error("get connection failure", e);
@@ -137,6 +142,7 @@ public class DatabaseHelper {
             return false;
         }
         String sql = "INSERT INTO " + getTableName(entityClass);
+        System.out.println(sql);
         StringBuilder columns = new StringBuilder("(");
         StringBuilder values = new StringBuilder("(");
         for (String fieldName : fieldMap.keySet()){
@@ -184,8 +190,23 @@ public class DatabaseHelper {
     }
 
 
-    public static String getTableName(Class<?> entityClass){
-        return entityClass.getSimpleName();
+    public static void executeSqlFile(String filePath){
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try {
+            String sql;
+            while ((sql = reader.readLine()) != null){
+                executeUpdate(sql);
+            }
+        } catch (IOException e) {
+            LOGGER.error("execute sql file failure", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private static String getTableName(Class<?> entityClass){
+        return entityClass.getSimpleName().toLowerCase();
     }
 
 }

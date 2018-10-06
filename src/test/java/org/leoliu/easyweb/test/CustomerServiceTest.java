@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.leoliu.easyweb.crmdemo.model.Customer;
 import org.leoliu.easyweb.crmdemo.service.CustomerService;
+import org.leoliu.easyweb.helper.DatabaseHelper;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +24,8 @@ public class CustomerServiceTest {
     }
 
     @Before
-    public void init(){
-        //TODO initiate the database
+    public void init() throws IOException {
+        DatabaseHelper.executeSqlFile("sql/customer_init.sql");
     }
 
     @Test
