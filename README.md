@@ -1,3 +1,3 @@
 #EasyWeb
-##A scalable web framework in Java
+##A demo for studying web framework EasyWeb in Java.
 
